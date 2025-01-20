@@ -5,20 +5,28 @@ from app.database import get_db
 from app.models.livro import Livro, Leitor, Emprestimo
 from app.schemas import LivroSchema, LeitorSchema, EmprestimoSchema
 
-router = APIRouter(prefix="/livros", tags=["Livros"])
+router = APIRouter(prefix="/biblioteca", tags=["Biblioteca"])
+
 
 # CRUD para Livros
 
-@router.get("/")
+@router.get("/livros/contagem")
+def contar_livros(db: Session = Depends(get_db)):
+    total = db.query(Livro).count()
+    return {"total_livros": total}
+
+
+@router.get("/livros/")
 def listar_livros(db: Session = Depends(get_db)):
     try:
         livros = db.query(Livro).all()
         return livros
     except SQLAlchemyError as e:
-        db.rollback()  # Rollback em caso de erro no banco
+        db.rollback()  
         raise HTTPException(status_code=500, detail=f"Erro ao listar livros: {str(e)}")
 
-@router.post("/")
+
+@router.post("/livros/")
 def criar_livro(livro: Livro, db: Session = Depends(get_db)):
     try:
         db.add(livro)
@@ -29,7 +37,8 @@ def criar_livro(livro: Livro, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao criar livro: {str(e)}")
 
-@router.get("/{livro_id}")
+
+@router.get("/livros/{livro_id}")
 def obter_livro(livro_id: int, db: Session = Depends(get_db)):
     try:
         livro = db.query(Livro).filter(Livro.id == livro_id).first()
@@ -39,7 +48,8 @@ def obter_livro(livro_id: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao obter livro: {str(e)}")
 
-@router.put("/{livro_id}")
+
+@router.put("/livros/{livro_id}")
 def atualizar_livro(livro_id: int, livro: Livro, db: Session = Depends(get_db)):
     try:
         db_livro = db.query(Livro).filter(Livro.id == livro_id).first()
@@ -54,7 +64,8 @@ def atualizar_livro(livro_id: int, livro: Livro, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar livro: {str(e)}")
 
-@router.delete("/{livro_id}")
+
+@router.delete("/livros/{livro_id}")
 def deletar_livro(livro_id: int, db: Session = Depends(get_db)):
     try:
         db_livro = db.query(Livro).filter(Livro.id == livro_id).first()
@@ -67,10 +78,6 @@ def deletar_livro(livro_id: int, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar livro: {str(e)}")
 
-@router.get("/livros/leitores/{leitor_id}")
-def listar_livros_por_leitor(leitor_id: int, db: Session = Depends(get_db)):
-    livros = db.query(Livro).join(Emprestimo).filter(Emprestimo.leitor_id == leitor_id).all()
-    return livros
 
 # CRUD para Leitores
 
@@ -81,6 +88,7 @@ def listar_leitores(db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao listar leitores: {str(e)}")
+
 
 @router.post("/leitores/")
 def criar_leitor(leitor: LeitorSchema, db: Session = Depends(get_db)):
@@ -94,6 +102,7 @@ def criar_leitor(leitor: LeitorSchema, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao criar leitor: {str(e)}")
 
+
 @router.get("/leitores/{leitor_id}")
 def obter_leitor(leitor_id: int, db: Session = Depends(get_db)):
     try:
@@ -103,6 +112,7 @@ def obter_leitor(leitor_id: int, db: Session = Depends(get_db)):
         return leitor
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao obter leitor: {str(e)}")
+
 
 @router.put("/leitores/{leitor_id}")
 def atualizar_leitor(leitor_id: int, leitor: LeitorSchema, db: Session = Depends(get_db)):
@@ -119,6 +129,7 @@ def atualizar_leitor(leitor_id: int, leitor: LeitorSchema, db: Session = Depends
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar leitor: {str(e)}")
 
+
 @router.delete("/leitores/{leitor_id}")
 def deletar_leitor(leitor_id: int, db: Session = Depends(get_db)):
     try:
@@ -132,6 +143,7 @@ def deletar_leitor(leitor_id: int, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar leitor: {str(e)}")
 
+
 # CRUD para Emprestimos
 
 @router.get("/emprestimos/")
@@ -141,6 +153,7 @@ def listar_emprestimos(db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao listar empréstimos: {str(e)}")
+
 
 @router.post("/emprestimos/")
 def criar_emprestimo(emprestimo: EmprestimoSchema, db: Session = Depends(get_db)):
@@ -154,6 +167,7 @@ def criar_emprestimo(emprestimo: EmprestimoSchema, db: Session = Depends(get_db)
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao criar empréstimo: {str(e)}")
 
+
 @router.get("/emprestimos/{emprestimo_id}")
 def obter_emprestimo(emprestimo_id: int, db: Session = Depends(get_db)):
     try:
@@ -163,6 +177,7 @@ def obter_emprestimo(emprestimo_id: int, db: Session = Depends(get_db)):
         return emprestimo
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao obter empréstimo: {str(e)}")
+
 
 @router.put("/emprestimos/{emprestimo_id}")
 def atualizar_emprestimo(emprestimo_id: int, emprestimo: EmprestimoSchema, db: Session = Depends(get_db)):
@@ -179,6 +194,7 @@ def atualizar_emprestimo(emprestimo_id: int, emprestimo: EmprestimoSchema, db: S
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar empréstimo: {str(e)}")
 
+
 @router.delete("/emprestimos/{emprestimo_id}")
 def deletar_emprestimo(emprestimo_id: int, db: Session = Depends(get_db)):
     try:
@@ -191,3 +207,29 @@ def deletar_emprestimo(emprestimo_id: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar empréstimo: {str(e)}")
+
+
+# Consultas
+
+@router.get("/buscar/")
+def buscar_livros_por_titulo(titulo: str, db: Session = Depends(get_db)):
+    livros = db.query(Livro).filter(Livro.titulo.ilike(f"%{titulo}%")).all()
+    return livros
+
+
+@router.get("/livros/leitores/{leitor_id}")
+def listar_livros_por_leitor(leitor_id: int, db: Session = Depends(get_db)):
+    livros = db.query(Livro).join(Emprestimo).filter(Emprestimo.leitor_id == leitor_id).all()
+    return livros
+
+
+@router.get("/livros/por_ano/")
+def listar_livros_por_ano(ano: int, db: Session = Depends(get_db)):
+    livros = db.query(Livro).filter(Livro.ano == ano).all()
+    return livros
+
+
+@router.get("/livros/ordenados/")
+def listar_livros_ordenados(ordenar_por: str = "titulo", db: Session = Depends(get_db)):
+    livros = db.query(Livro).order_by(getattr(Livro, ordenar_por)).all()
+    return livros

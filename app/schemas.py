@@ -22,7 +22,7 @@ class LeitorBase(BaseModel):
     email: str
     telefone: Optional[str] = None
     endereco: Optional[str] = None
-    data_nascimento: Optional[date] = None # Aqui já garantimos que a data é do tipo date
+    data_nascimento: Optional[date] = None # Garante que a data é do tipo date
 
 class LeitorSchema(LeitorBase):
     id: int

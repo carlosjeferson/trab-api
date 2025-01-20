@@ -1,0 +1,60 @@
+## **Divisão de Tarefas do Projeto**
+
+### **1. Carlos Jefferson - Responsável por: Core, Models e Routes**
+
+Jefferson foi responsável por implementar as seguintes partes do projeto:
+
+#### **Core:**
+- Implementação da lógica central do sistema, que inclui as funções principais para manipulação de dados.
+- Estruturação da arquitetura do projeto, garantindo que todos os componentes interajam de forma eficiente.
+
+#### **Models:**
+- Definição das entidades do sistema, como `Livro`, `Leitor` e `Emprestimo`, no arquivo `models.py`.
+- Garantiu que as classes representassem as tabelas no banco de dados e incluíssem as relações necessárias entre elas.
+- Implementação de validações de dados dentro dos modelos para garantir a integridade das informações.
+
+#### **Routes:**
+- Desenvolvimento das rotas da API no arquivo `routes.py`.
+  - Implementação de CRUD (Create, Read, Update, Delete) para as entidades principais (`Livro`, `Leitor`, `Emprestimo`).
+  - Tratamento de exceções e erros para garantir a resiliência do sistema.
+  - Criação de rotas RESTful para comunicação com o frontend, permitindo manipulação de dados do banco de dados de forma segura e eficiente.
+
+---
+
+### **2. Elixandre - Responsável por: `database.py`, `main.py`, `schemas.py`**
+
+Elixandre ficou responsável por configurar a comunicação com o banco de dados, gerenciar as operações principais da aplicação e definir os esquemas de validação de dados.
+
+#### **database.py:**
+- Configuração da conexão com o banco de dados e gerenciamento de sessões.
+  - Estabelecimento de uma sessão de banco de dados utilizando o SQLAlchemy.
+  - Definição de funções auxiliares para abrir e fechar conexões de forma eficiente e segura.
+
+#### **main.py:**
+- Inicialização da aplicação FastAPI e configuração das rotas.
+  - Implementação da instância do aplicativo FastAPI, incluindo o mapeamento das rotas de `routes.py` e configuração das dependências para o banco de dados.
+  - Estruturação do ponto de entrada da aplicação (onde a API será executada) e configuração de todos os middlewares necessários.
+  
+#### **schemas.py:**
+- Definição dos esquemas de validação de dados usando Pydantic.
+  - Criação de classes que representam a estrutura dos dados para entrada e saída na API.
+  - Garantia de que os dados enviados e recebidos estejam no formato correto antes de serem processados ou armazenados.
+
+---
+
+### **Colaboração entre Jefferson e Elixandre**
+
+- Ambos trabalharam juntos para integrar suas partes, garantindo que as rotas de `routes.py` se comunicassem adequadamente com o banco de dados, utilizando a configuração feita por Elixandre no `database.py`.
+- Jefferson e Elixandre ajudaram no processo de depuração e testes, validando que as funcionalidades de CRUD estavam funcionando corretamente e sem falhas.
+- Além disso, ambos participaram da revisão do código, ajudando a identificar pontos de melhoria, otimização e refatoração.
+
+---
+
+### **Resumo da Divisão de Tarefas:**
+
+| **Membro da Equipe**   | **Responsabilidade**                                        |
+|------------------------|-------------------------------------------------------------|
+| **Jefferson Carlos**    | Core, Models (Entidades) e Routes (Implementação de CRUD)   |
+| **Elixandre**           | `database.py`, `main.py`, `schemas.py`                      |
+
+---
